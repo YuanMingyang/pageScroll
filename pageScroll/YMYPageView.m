@@ -121,6 +121,9 @@ static YMYPageView *pageView;
     [self addSubview:self.vcScrol];
 }
 -(void)titleBtnClick:(UIButton *)button{
+    
+    [self topScrollWith:button];
+    
     self.isClickTop = YES;
     if (button.selected) {
         return;
@@ -138,6 +141,31 @@ static YMYPageView *pageView;
     [self.vcScrol setContentOffset:CGPointMake(SCREEN_WIDTH*self.selIndex, 0) animated:YES];
 }
 
+-(void)topScrollWith:(UIButton *)button{
+//    CGFloat contentOfSetX = self.titleScrol.contentOffset.x;
+    CGRect btnFrame = button.frame;
+//    if (btnFrame.origin.x+btnFrame.size.width-SCREEN_WIDTH>contentOfSetX) {
+//        [self.titleScrol setContentOffset:CGPointMake(btnFrame.origin.x+btnFrame.size.width-SCREEN_WIDTH, 0) animated:YES];
+//    }
+//    if (contentOfSetX>btnFrame.origin.x) {
+//        [self.titleScrol setContentOffset:CGPointMake(btnFrame.origin.x, 0) animated:YES];
+//    }
+    CGFloat aa = btnFrame.origin.x+btnFrame.size.width*0.5-SCREEN_WIDTH*0.5;
+    CGFloat bb = self.titleScrol.contentSize.width-SCREEN_WIDTH;
+    if (aa>0) {
+        if (aa>bb) {
+            [self.titleScrol setContentOffset:CGPointMake(bb, 0) animated:YES];
+        }else{
+            [self.titleScrol setContentOffset:CGPointMake(aa, 0) animated:YES];
+        }
+    }else{
+        [self.titleScrol setContentOffset:CGPointMake(0, 0) animated:YES];
+    }
+    
+    
+}
+
+
 #pragma mark --- UIScrollViewDelegate
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView{
     if (!self.isClickTop) {
@@ -146,6 +174,7 @@ static YMYPageView *pageView;
         self.selIndex = page;
         for (UIButton *btn in self.buttons) {
             if (btn.tag==self.selIndex) {
+                [self topScrollWith:btn];
                 btn.selected = YES;
                 btn.titleLabel.font = SelFont;
             }else{
